@@ -1,63 +1,79 @@
-###############################################################################
-# Set default behavior to automatically normalize line endings.
-###############################################################################
-* text=auto
 
-###############################################################################
-# Set default behavior for command prompt diff.
-#
-# This is need for earlier builds of msysgit that does not have it on by
-# default for csharp files.
-# Note: This is only used by command line
-###############################################################################
-#*.cs     diff=csharp
+using System;
+using System.Collections;
 
-###############################################################################
-# Set the merge driver for project and solution files
-#
-# Merging from the command prompt will add diff markers to the files if there
-# are conflicts (Merging from VS is not affected by the settings below, in VS
-# the diff markers are never inserted). Diff markers may cause the following 
-# file extensions to fail to load in VS. An alternative would be to treat
-# these files as binary and thus will always conflict and require user
-# intervention with every merge. To do so, just uncomment the entries below
-###############################################################################
-#*.sln       merge=binary
-#*.csproj    merge=binary
-#*.vbproj    merge=binary
-#*.vcxproj   merge=binary
-#*.vcproj    merge=binary
-#*.dbproj    merge=binary
-#*.fsproj    merge=binary
-#*.lsproj    merge=binary
-#*.wixproj   merge=binary
-#*.modelproj merge=binary
-#*.sqlproj   merge=binary
-#*.wwaproj   merge=binary
+class Employee
+{
+    public string EmployeeName { get; set; }
+    public int EmployeeID { get; set; }
+    public double Salary { get; set; }
 
-###############################################################################
-# behavior for image files
-#
-# image files are treated as binary by default.
-###############################################################################
-#*.jpg   binary
-#*.png   binary
-#*.gif   binary
+    public Employee(int id, string name, double salary)
+    {
+        EmployeeID = id;
+        EmployeeName = name;
+        Salary = salary;
+    }
+}
 
-###############################################################################
-# diff behavior for common document formats
-# 
-# Convert binary document formats to text before diffing them. This feature
-# is only available from the command line. Turn it on by uncommenting the 
-# entries below.
-###############################################################################
-#*.doc   diff=astextplain
-#*.DOC   diff=astextplain
-#*.docx  diff=astextplain
-#*.DOCX  diff=astextplain
-#*.dot   diff=astextplain
-#*.DOT   diff=astextplain
-#*.pdf   diff=astextplain
-#*.PDF   diff=astextplain
-#*.rtf   diff=astextplain
-#*.RTF   diff=astextplain
+class EmployeeDAL
+{
+    private ArrayList employees = new ArrayList();
+
+    public bool AddEmployee(Employee e)
+    {
+        if (e == null)
+            return false;
+
+        employees.Add(e);
+        return true;
+    }
+
+    public bool DeleteEmployee(int id)
+    {
+        foreach (Employee emp in employees)
+        {
+            if (emp.EmployeeID == id)
+            {
+                employees.Remove(emp);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public string SearchEmployee(int id)
+    {
+        foreach (Employee emp in employees)
+        {
+            if (emp.EmployeeID == id)
+                return emp.EmployeeName;
+        }
+        return null;
+    }
+
+    public Employee[] GetAllEmployeesListAll()
+    {
+        Employee[] empArray = new Employee[employees.Count];
+        employees.CopyTo(empArray);
+        return empArray;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        EmployeeDAL dal = new EmployeeDAL();
+
+        dal.AddEmployee(new Employee(1, "Lokii", 50000));
+        dal.AddEmployee(new Employee(2, "Bharani", 52000));
+
+        Console.WriteLine(dal.SearchEmployee(1));
+
+        foreach (Employee e  in dal.GetAllEmployeesListAll())
+        {
+            Console.WriteLine(e.EmployeeID + " " + e.EmployeeName + " " + e.Salary);
+        }
+    }
+}
